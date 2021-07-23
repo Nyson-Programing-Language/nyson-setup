@@ -7,3 +7,4 @@ edition = "2018"
 
 [dependencies]
 fltk = { version = "^1", features = ["fltk-bundled"] }
+which = "4.1.0"
