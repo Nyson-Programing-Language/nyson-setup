@@ -23,7 +23,11 @@ fn main() {
             .args(["C:\\Users\\%username%"])
             .output()
             .expect("failed to execute process");
-        loc = String::from_utf8_lossy(&output.stdout).to_string();
+        loc.push_str(String::from_utf8_lossy(&output.stdout).to_string().as_str());
+        loc.pop();
+        loc.pop();
+        loc.pop();
+        loc.push_str(r"\nyson");
     } else {
         let output = Command::new("whoami")
             .output()
@@ -31,8 +35,8 @@ fn main() {
         loc = "/home/".to_string();
         loc.push_str(String::from_utf8_lossy(&output.stdout).to_string().as_str());
         loc.pop();
+        loc.push_str("/nyson");
     }
-    loc.push_str("/nyson");
     let app = app::App::default().with_scheme(app::Scheme::Gtk);
     let mut wind = Window::default()
         .with_label("Nyson Installer")
@@ -55,14 +59,14 @@ fn main() {
             if install_rust == true {
                 if env::consts::OS == "windows" {
                     Command::new("curl")
-                        .args(["-L", "https://static.rust-lang.org/rustup/dist/i686-pc-windows-msvc/rustup-init.exe", "--output", "rust.exe"])
+                        .args(["-L", "https://static.rust-lang.org/rustup/dist/i686-pc-windows-msvc/rustup-init.exe", "--output", "rustup-init.exe"])
                         .output()
                         .expect("failed to execute process");
-                    Command::new("rust.exe")
+                    Command::new("rustup-init.exe")
                         .args([""])
                         .output()
                         .expect("failed to execute process");
-                    fs::remove_file("rust.exe");
+                    fs::remove_file("rustup-init.exe");
                 } else {
                     Command::new("curl")
                         .args(["--proto", "=https", "--tlsv1.2", "https://sh.rustup.rs", "--output", "rustinstaller.sh"])
