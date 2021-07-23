@@ -1,3 +1,4 @@
+use curl::easy::Easy;
 use fltk::button::*;
 use fltk::enums::*;
 use fltk::frame::*;
@@ -6,7 +7,6 @@ use fltk::window::*;
 use fltk::*;
 use std::process::Command;
 use std::{env, fs};
-use curl::easy::Easy;
 extern crate serde_json;
 
 fn main() {
