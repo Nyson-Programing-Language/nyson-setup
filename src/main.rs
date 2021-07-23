@@ -63,7 +63,7 @@ fn main() {
                         .output()
                         .expect("failed to execute process");
                     Command::new("rustup-init.exe")
-                        .args([""])
+                        .args(["-y"])
                         .output()
                         .expect("failed to execute process");
                     fs::remove_file("rustup-init.exe");
