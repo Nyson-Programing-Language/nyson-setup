@@ -125,7 +125,35 @@ fn main() {
                     .expect("failed to execute process");
                 fs::remove_file("nyson.tar.gz");
             }
-            text.set_label("Finished installing nyson");
+            let mut cargo = "".to_string();
+            cargo.push_str(&loc);
+            cargo.push_str("/Cargo.toml");
+            Command::new("cargo")
+                .args(["build", "--release", "--manifest-path", cargo.as_str()])
+                .output()
+                .expect("failed to execute process");
+            if env::consts::OS == "windows" {
+                let mut PATH = r"PATH=%PATH%;".to_string();
+                PATH.push_str(&loc);
+                PATH.push_str(r"/target/release");
+                Command::new("SET")
+                    .args([PATH.as_str()])
+                    .output()
+                    .expect("failed to execute process");
+                Command::new("setx")
+                    .args(["/M", "PATH", PATH.as_str()])
+                    .output()
+                    .expect("failed to execute process");
+                text.set_label("Finished installing nyson");
+            } else {
+                let mut PATH = loc.clone();
+                PATH.push_str(r"/target/release/nyson");
+                Command::new("sudo")
+                    .args(["-k", "cp", &PATH, "/usr/bin"])
+                    .output()
+                    .expect("failed to execute process");
+                text.set_label("Finished installing nyson");
+            }
         }
         else if step == 3 {
             std::process::exit(1);
@@ -137,4 +165,9 @@ fn main() {
     });
 
     app.run().unwrap();
+}
+
+fn copy(path1: String, path2: String) -> std::io::Result<()> {
+    fs::copy(path1, path2)?;
+    Ok(())
 }
