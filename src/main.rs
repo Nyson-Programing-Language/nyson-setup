@@ -1,15 +1,15 @@
-use fltk::*;
-use std::{env, fs};
-use std::path::{Path, PathBuf};
-use fltk::window::*;
-use fltk::prelude::*;
 use fltk::button::*;
-use fltk::tree::*;
-use fltk::frame::*;
 use fltk::enums::*;
+use fltk::frame::*;
 use fltk::input::*;
-use which::which;
+use fltk::prelude::*;
+use fltk::tree::*;
+use fltk::window::*;
+use fltk::*;
+use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::{env, fs};
+use which::which;
 
 fn main() {
     let mut step = 0;
@@ -17,23 +17,22 @@ fn main() {
     let mut install_git = false;
     let mut install_rust = false;
     match which::which("git") {
-        Ok(_) => {has_git = true}
-        Err(_) => {has_git = false}
+        Ok(_) => has_git = true,
+        Err(_) => has_git = false,
     };
     let mut has_rust;
     match which::which("cargo") {
-        Ok(_) => {has_rust = true}
-        Err(_) => {has_rust = false}
+        Ok(_) => has_rust = true,
+        Err(_) => has_rust = false,
     };
-    let mut loc:String;
+    let mut loc: String;
     if env::consts::OS == "windows" {
         let output = Command::new("echo")
             .args(["C:\\Users\\%username%"])
             .output()
             .expect("failed to execute process");
         loc = String::from_utf8_lossy(&output.stdout).to_string();
-    }
-    else {
+    } else {
         let output = Command::new("whoami")
             .output()
             .expect("failed to execute process");
@@ -57,7 +56,7 @@ fn main() {
     //wind.make_resizable(true);
     wind.show();
     text.set_label("This is the nyson installer\ndo you want to continue?");
-    
+
     ok.set_callback(move |_| {
         step = step + 1;
         if step == 1 {
@@ -67,25 +66,21 @@ fn main() {
                 has_git = true;
                 install_git = false;
                 step = 0;
-            }
-            else if install_rust == true {
+            } else if install_rust == true {
                 text.set_label("Installing rust");
                 //installs rust
                 has_rust = true;
                 install_rust = false;
                 step = 0;
-            }
-            else if has_git == false {
+            } else if has_git == false {
                 text.set_label("It does not look like you have\ngit do you want to install it?");
                 install_git = true;
                 step = 0;
-            }
-            else if has_rust == false {
+            } else if has_rust == false {
                 text.set_label("It does not look like you have\nrust do you want to install it?");
                 install_rust = true;
                 step = 0;
-            }
-            else {
+            } else {
                 text.set_label("Where do you want nyson\ninstalled?");
                 input.set_value(&loc);
                 input.show();
@@ -96,6 +91,6 @@ fn main() {
     cancel.set_callback(move |_| {
         std::process::exit(1);
     });
-    
+
     app.run().unwrap();
 }
